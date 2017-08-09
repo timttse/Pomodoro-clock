@@ -13,10 +13,17 @@
 
 	<script>
 		$(document).ready(function(){
-			var c=new Clock($(".time").text()*60*1000)
+			var timeInMil=$(".time").val()*60*1000
+			var c=new Clock(timeInMil)
 			$(".countdown").text(c.toTimeString());
 			var timer=0;
-			console.log(timer==false);
+
+			$(".time").change(function(){
+				timeInMil=$(".time").val()*60*1000
+				c.setMilliseconds(timeInMil);
+				$(".countdown").text(c.toTimeString());
+				timer=0;
+			});
 
 			// start button
 			$(".startTimer").click(function(){
@@ -41,7 +48,7 @@
 				clearInterval(timer);
 				timer=0;
 			});
-			
+
 	    });
 
 	</script>
@@ -50,10 +57,12 @@
 <body>
 	<div class="container-fluid text-center">
 		<div>
-		<span class="time">1</span><span> min</span></div>
-		<button class="startTimer">Start</button>
-		<button class="stopTimer">Stop</button>
+		<!-- <span class="time">1</span><span> min</span>-->
+		<input class="time" type="text" value="1" />
+		</div>
 		<div class="countdown"></div>
+		<button class="stopTimer">Stop</button>
+		<button class="startTimer">Start</button>
 	</div>
 </body>
 </html>

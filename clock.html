@@ -16,6 +16,7 @@
 
 		function startTimers(timer1,timer2){
 			currentTimer=timer1.name;
+			$(".currentTimer").text(currentTimer);
 			timer1.startTimer($(".countdown"),100);
 			console.log(currentTimer);
 
@@ -40,25 +41,60 @@
 			}
 		}
 
+		function timersRunning(timers){
+			var args = Array.prototype.slice.call(arguments);
+
+			// if at least one timer is running, return true, else false
+			return args.some(function(elem){
+				return elem.isRunning();
+			});
+		}
+
 		$(document).ready(function(){
 			
-			// get session time
+			// create session timer
 			var sessionInMil=$(".time").val()*60*1000;
-			var s=new Clock("session",sessionInMil);
-			//console.log(s.getSeconds());
+			var s=new Clock("Session",sessionInMil);
 
+			// create break timer
 			var breakInMil=$(".break").val()*60*1000;
-			var b=new Clock("break",breakInMil);
+			var b=new Clock("Break",breakInMil);
 
+			// set global current timer
+			currentTimer=s.name;
+
+			// Set current timer text
+			$(".currentTimer").text(s.name);
+
+			// Set timer text to session timer
 			$(".countdown").text(s.getMinutes());
+
+			// session input value change
+			$(".time").change(function(){
+				sessionInMil=$(this).val()*60*1000
+				s.setMilliseconds(sessionInMil);
+				if(currentTimer===s.name){
+					$(".countdown").text(s.timeString());
+					s.stopTimer();
+				}
+			});
+
+			//break input value cahnge
+			$(".break").change(function(){
+				breakInMil=$(this).val()*60*1000
+				b.setMilliseconds(breakInMil);
+				if(currentTimer===b.name){
+					$(".countdown").text(b.timeString());
+					b.stopTimer();
+				}
+			});
 
 
 			// start button
 			$(".startTimer").click(function(){
-				// s.startTimer($(".countdown"),100);
 
 				if(!s.isRunning() && !b.isRunning()) {
-					if(currentTimer==='' || currentTimer==='session'){
+					if(currentTimer==='' || currentTimer===s.name){
 						startTimers(s,b);
 					} else if (currentTimer='break'){
 						startTimers(b,s);
@@ -66,10 +102,13 @@
 				}
 			});
 
-
 			// stop/pause button
 			$(".stopTimer").click(function(){
 				stopTimers(s,b);
+			});
+
+			$(".test").click(function(){
+				console.log(timersRunning(s,b));
 			});
 
 	    });
@@ -80,13 +119,14 @@
 <body>
 	<div class="container-fluid text-center">
 		<div class="row">
-		<!-- <span class="time">1</span><span> min</span>-->
 		<div class="col-sm-6"><label>Break Length: </label><input class="break" type="text" value="2" /></div>
 		<div class="col-sm-6"><label>Session Length: </label><input class="time" type="text" value="1" /></div>
 		</div>
+		<div class="currentTimer"></div>
 		<div class="countdown"></div>
 		<button class="stopTimer">Stop</button>
 		<button class="startTimer">Start</button>
+		<button class="test">Test</button>
 	</div>
 </body>
 </html>

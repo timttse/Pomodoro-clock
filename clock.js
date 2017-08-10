@@ -6,8 +6,10 @@ function Clock(name, millisecs){
 	// this.minutes=getMinutes();
 	// this.seconds=getSeconds();
 
-	// this.timeString=toTimeString();
-	// this.dec=countdown();
+	this.timeString=function(){
+		return toTimeString();
+	}
+
 	this.name=name;
 
 	this.getMilliseconds=function(){
@@ -62,7 +64,7 @@ function Clock(name, millisecs){
 		var seconds = Math.floor((millisecs % (1000 * 60)) / 1000);
 		if (seconds<10){seconds='0'+seconds};
 		// var timeString=days+'d '+hours+'h '+minutes+':'+seconds;
-		console.log(name+": "+days+'d '+hours+'h '+minutes+':'+seconds);
+		// console.log(name+": "+days+'d '+hours+'h '+minutes+':'+seconds);
 		var timeString='';
 		if(days>0){
 			timeString=days+'d '+hours+":"+minutes+":"+seconds;

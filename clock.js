@@ -1,44 +1,58 @@
-function Clock(millisecs){
+function Clock(name, millisecs){
 	var timer=0;
 	var maxTime=millisecs;
 
 	// this.milliseconds=getMilliseconds();
 	// this.minutes=getMinutes();
 	// this.seconds=getSeconds();
-	this.timeString=toTimeString();
-	this.dec=countdown();
+
+	// this.timeString=toTimeString();
+	// this.dec=countdown();
+	this.name=name;
 
 	this.getMilliseconds=function(){
 		return millisecs;
-	}
-
-	this.isRunning=function(){
-		return isRunning();
-	}
+	};
 
 	this.setMilliseconds = function(newMillisecs){
 		millisecs=newMillisecs;
 		maxTime=millisecs;
 	};
 
+
+	this.getSeconds=function(){
+		var seconds = Math.floor((millisecs % (1000 * 60)) / 1000);
+		if (seconds<10){seconds='0'+seconds};
+		return seconds;
+	}
+
+	this.getMinutes=function(){
+		var seconds=getSeconds();
+		var minutes=Math.floor((millisecs % (1000 * 60 * 60)) / (1000 * 60))
+		 if  (minutes>0){
+			return minutes+":"+seconds;
+		} else {
+			return "0:"+seconds;
+		}
+	};
+
+	this.isRunning=function(){
+		return isRunning();
+	};
+
+	
 	this.reset=function(){
 		millisecs=maxTime;
-	}
-
-	function isRunning(){
-		return Boolean(timer);
-	}
-
-	function getMilliseconds(){
-		return millisecs;
-	}
+	};
 
 	function getSeconds(){
-		return Math.floor((millisecs % (1000 * 60)) / 1000);
+		var seconds = Math.floor((millisecs % (1000 * 60)) / 1000);
+		if (seconds<10){seconds='0'+seconds};
+		return seconds;
 	}
-
-	function getMinutes(){
-		return Math.floor((millisecs % (1000 * 60 * 60)) / (1000 * 60));
+	
+	function isRunning(){
+		return Boolean(timer);
 	}
 
 	function toTimeString(){
@@ -46,15 +60,30 @@ function Clock(millisecs){
 		var hours = Math.floor((millisecs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 		var minutes = Math.floor((millisecs % (1000 * 60 * 60)) / (1000 * 60));
 		var seconds = Math.floor((millisecs % (1000 * 60)) / 1000);
-		var timeString=days+'d '+hours+'h '+getMinutes()+':'+getSeconds();
+		if (seconds<10){seconds='0'+seconds};
+		// var timeString=days+'d '+hours+'h '+minutes+':'+seconds;
+		console.log(name+": "+days+'d '+hours+'h '+minutes+':'+seconds);
+		var timeString='';
+		if(days>0){
+			timeString=days+'d '+hours+":"+minutes+":"+seconds;
+		} else if(hours>0){
+			timeString=hours+":"+minutes+":"+seconds;
+		} else if  (minutes>0){
+			timeString=minutes+":"+seconds;
+		} else {
+			timeString="0:"+seconds;
+		}
+		// console.log(timeString);
 		return timeString;
 	};
 
 
 	// Render in given html element
 	function render(elem){
+		if (elem!==undefined){
 		// elem.innerHTML=toTimeString();
-		elem.html(toTimeString());
+			elem.html(toTimeString());
+		}
 	}
 
 	function countdown(){
@@ -72,12 +101,13 @@ function Clock(millisecs){
 	    		if(millisecs<1){
 	    			clearInterval(timer);
 	    			timer=0;
+	    			// console.log(name+" stopped" + Boolean(timer));
 	    		} else {
 		    		countdown();
 		    		render(elem)
 	    		}
 	    	},delay);
-			}
+		}
 	};
 
 	this.stopTimer=function(){
@@ -87,8 +117,8 @@ function Clock(millisecs){
 
 }
 
-// var c = new Clock(10000);
-// console.log(c.minutes);
+// var c = new Clock(60000);
+// console.log(c.getSeconds());
 // console.log(c.isRunning());
 // console.log("starting timer");
 // c.startTimer('');

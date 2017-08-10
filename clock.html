@@ -12,84 +12,64 @@
 	<title>Pomodoro Clock</title>
 
 	<script>
+		var currentTimer='';
 
-		function startTimer(timer1,timer2){
+		function startTimers(timer1,timer2){
+			currentTimer=timer1.name;
 			timer1.startTimer($(".countdown"),100);
-			// c.startTimer();
+			console.log(currentTimer);
 
 			var t=setInterval(function(){
 				// console.log(timer1.getMilliseconds());
-				if(timer1.getMilliseconds()<=0){
+				if(timer1.getMilliseconds()===0){
 					clearInterval(t);
+					timer1.stopTimer();
 					timer1.reset();
 					$(".countdown").text(timer2.timeString);
-					startTimer(timer2,timer1);
+					startTimers(timer2,timer1);
 				}
-			},1000);
+			},100);
+		}
+
+		function stopTimers(timer1,timer2){
+			if(timer1.isRunning()){
+				timer1.stopTimer();
+			}
+			if(timer2.isRunning()){
+				timer2.stopTimer();
+			}
 		}
 
 		$(document).ready(function(){
 			
 			// get session time
-			var sessionInMil=$(".time").val()*60*1000
-			var c=new Clock(sessionInMil);
+			var sessionInMil=$(".time").val()*60*1000;
+			var s=new Clock("session",sessionInMil);
+			//console.log(s.getSeconds());
 
-			var breakInMil=$(".break").val()*60*1000
-			var b=new Clock(breakInMil);
+			var breakInMil=$(".break").val()*60*1000;
+			var b=new Clock("break",breakInMil);
 
-			$(".countdown").text(c.timeString);
-			var timer=0;
+			$(".countdown").text(s.getMinutes());
 
-			// // session input value change
-			// $(".time").change(function(){
-			// 	sessionInMil=$(this).val()*60*1000
-			// 	c.setMilliseconds(sessionInMil);
-			// 	$(".countdown").text(c.toTimeString());
-			// 	timer=0;
-			// });
-
-			// //break input value cahnge
-			// $(".break").change(function(){
-			// 	breakInMil=$(this).val()*60*1000
-			// 	b.setMilliseconds(breakInMil);
-			// 	$(".countdown").text(b.toTimeString());
-			// 	timer=0;
-			// });
 
 			// start button
 			$(".startTimer").click(function(){
-				startTimer(c,b);
-				
-				// if(c.milliseconds>0){
-				// 	c.startTimer($(".countdown"),100);
-				// 	// c.startTimer();
+				// s.startTimer($(".countdown"),100);
 
-				// 	var t=setInterval(function(){
-				// 		console.log(c.getMilliseconds());
-				// 		if(c.getMilliseconds()<=0){
-				// 			clearInterval(t);
-				// 			$(".countdown").text(b.timeString);
-				// 			b.startTimer($(".countdown"));
-				// 		}
-				// 	},1000);
-
-
-				// } else if (b.milliseconds>0){
-				// 	// b.startTimer();
-				// }
+				if(!s.isRunning() && !b.isRunning()) {
+					if(currentTimer==='' || currentTimer==='session'){
+						startTimers(s,b);
+					} else if (currentTimer='break'){
+						startTimers(b,s);
+					}
+				}
 			});
 
 
 			// stop/pause button
 			$(".stopTimer").click(function(){
-				if(c.isRunning()){
-					c.stopTimer();
-				}
-				if(b.isRunning()){
-					b.stopTimer();
-				}
-				// clearInterval(timer);
-				// timer=0;
+				stopTimers(s,b);
 			});
 
 	    });

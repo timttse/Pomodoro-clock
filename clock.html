@@ -12,41 +12,84 @@
 	<title>Pomodoro Clock</title>
 
 	<script>
+
+		function startTimer(timer1,timer2){
+			timer1.startTimer($(".countdown"),100);
+			// c.startTimer();
+
+			var t=setInterval(function(){
+				// console.log(timer1.getMilliseconds());
+				if(timer1.getMilliseconds()<=0){
+					clearInterval(t);
+					timer1.reset();
+					$(".countdown").text(timer2.timeString);
+					startTimer(timer2,timer1);
+				}
+			},1000);
+		}
+
 		$(document).ready(function(){
-			var timeInMil=$(".time").val()*60*1000
-			var c=new Clock(timeInMil)
-			$(".countdown").text(c.toTimeString());
+			
+			// get session time
+			var sessionInMil=$(".time").val()*60*1000
+			var c=new Clock(sessionInMil);
+
+			var breakInMil=$(".break").val()*60*1000
+			var b=new Clock(breakInMil);
+
+			$(".countdown").text(c.timeString);
 			var timer=0;
 
-			$(".time").change(function(){
-				timeInMil=$(".time").val()*60*1000
-				c.setMilliseconds(timeInMil);
-				$(".countdown").text(c.toTimeString());
-				timer=0;
-			});
+			// // session input value change
+			// $(".time").change(function(){
+			// 	sessionInMil=$(this).val()*60*1000
+			// 	c.setMilliseconds(sessionInMil);
+			// 	$(".countdown").text(c.toTimeString());
+			// 	timer=0;
+			// });
+
+			// //break input value cahnge
+			// $(".break").change(function(){
+			// 	breakInMil=$(this).val()*60*1000
+			// 	b.setMilliseconds(breakInMil);
+			// 	$(".countdown").text(b.toTimeString());
+			// 	timer=0;
+			// });
 
 			// start button
 			$(".startTimer").click(function(){
-				if(!(timer)){
-					timer=setInterval(function(){
+				startTimer(c,b);
+				
+				// if(c.milliseconds>0){
+				// 	c.startTimer($(".countdown"),100);
+				// 	// c.startTimer();
 
-						if(c.getMilliseconds()<1){
-							clearInterval(timer);
-							timer=0;
-						} else {
-							c.countdown();
-							$(".countdown").text(c.toTimeString());
-						}
+				// 	var t=setInterval(function(){
+				// 		console.log(c.getMilliseconds());
+				// 		if(c.getMilliseconds()<=0){
+				// 			clearInterval(t);
+				// 			$(".countdown").text(b.timeString);
+				// 			b.startTimer($(".countdown"));
+				// 		}
+				// 	},1000);
 
-					},1000);
-				}
+
+				// } else if (b.milliseconds>0){
+				// 	// b.startTimer();
+				// }
 			});
 
 
 			// stop/pause button
 			$(".stopTimer").click(function(){
-				clearInterval(timer);
-				timer=0;
+				if(c.isRunning()){
+					c.stopTimer();
+				}
+				if(b.isRunning()){
+					b.stopTimer();
+				}
+				// clearInterval(timer);
+				// timer=0;
 			});
 
 	    });
@@ -56,9 +99,10 @@
 </head>
 <body>
 	<div class="container-fluid text-center">
-		<div>
+		<div class="row">
 		<!-- <span class="time">1</span><span> min</span>-->
-		<input class="time" type="text" value="1" />
+		<div class="col-sm-6"><label>Break Length: </label><input class="break" type="text" value="2" /></div>
+		<div class="col-sm-6"><label>Session Length: </label><input class="time" type="text" value="1" /></div>
 		</div>
 		<div class="countdown"></div>
 		<button class="stopTimer">Stop</button>

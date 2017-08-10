@@ -50,10 +50,18 @@
 			});
 		}
 
+		function changeTimer(timer,input){
+			timer.setMilliseconds(input.val()*60*1000);
+			if(currentTimer===timer.name){
+				$(".countdown").text(timer.timeString());
+				timer.stopTimer();
+			}
+		}
+
 		$(document).ready(function(){
 			
 			// create session timer
-			var sessionInMil=$(".time").val()*60*1000;
+			var sessionInMil=$(".session").val()*60*1000;
 			var s=new Clock("Session",sessionInMil);
 
 			// create break timer
@@ -70,23 +78,13 @@
 			$(".countdown").text(s.getMinutes());
 
 			// session input value change
-			$(".time").change(function(){
-				sessionInMil=$(this).val()*60*1000
-				s.setMilliseconds(sessionInMil);
-				if(currentTimer===s.name){
-					$(".countdown").text(s.timeString());
-					s.stopTimer();
-				}
+			$(".session").change(function(){
+				changeTimer(s,$(this))
 			});
 
 			//break input value cahnge
 			$(".break").change(function(){
-				breakInMil=$(this).val()*60*1000
-				b.setMilliseconds(breakInMil);
-				if(currentTimer===b.name){
-					$(".countdown").text(b.timeString());
-					b.stopTimer();
-				}
+				changeTimer(b,$(this))
 			});
 
 
@@ -111,22 +109,64 @@
 				console.log(timersRunning(s,b));
 			});
 
+
+			$(".sInc").click(function(){
+				var add=+$(".session").val();
+				$(".session").val(add+1);
+				changeTimer(s,$(".session"));
+				//console.log($(".break").val()++)
+			});
+
+			$(".sDec").click(function(){
+				var dec=+$(".session").val();
+				if(dec>1){
+					$(".session").val(dec-1);
+					changeTimer(s,$(".session"));
+				}				
+			});
+
+
+			$(".bInc").click(function(){
+				var add=+$(".break").val();
+				$(".break").val(add+1);
+				changeTimer(b,$(".break"));
+				//console.log($(".break").val()++)
+			});
+
+			$(".bDec").click(function(){
+				var dec=+$(".break").val();
+				if(dec>1){
+					$(".break").val(dec-1);
+					changeTimer(b,$(".break"));
+				}				
+			});
+
 	    });
 
 	</script>
+	<style>
+		.wrapper{text-align: center;}
+		.center{display:inline-block; min-width: 500px;}
+		.timerSet{margin: 50px 0 30px 0;}
+		.textInput{width:50px;}
+		.currentTimer{margin:5px;}
+		.countdown{margin:15px;}
+	</style>
 
 </head>
 <body>
-	<div class="container-fluid text-center">
-		<div class="row">
-		<div class="col-sm-6"><label>Break Length: </label><input class="break" type="text" value="2" /></div>
-		<div class="col-sm-6"><label>Session Length: </label><input class="time" type="text" value="1" /></div>
+	<div class="wrapper text-center">
+		<div class="container-fluid center">
+			<div class="row timerSet justify-content-center">
+				<div class="col-sm-6"><label class="text-center">Break Length</label><br/><button class="bDec">-</button><input class="break textInput text-center" type="text" value="2" /><button class="bInc">+</button></div>
+				<div class="col-sm-6"><label class="text-center">Session Length</label><br/><button class="sDec">-</button><input class="session textInput text-center" type="text" value="1" /><button class="sInc">+</button></div>
+			</div>
+			<div><h3 class="currentTimer"></h3></div>
+			<div><h2 class="countdown"></h2></div>
+			<button class="stopTimer">Stop</button>
+			<button class="startTimer">Start</button>
+			<button class="test">Test</button>
 		</div>
-		<div class="currentTimer"></div>
-		<div class="countdown"></div>
-		<button class="stopTimer">Stop</button>
-		<button class="startTimer">Start</button>
-		<button class="test">Test</button>
 	</div>
 </body>
 </html>

@@ -1,199 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  	<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
-  	<link href='https://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	  	<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+	  	<link href='https://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
 
-	<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
-  	<!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
-  	<script src="clock.js"></script>
-  	<!-- <script src="script.js"></script> -->
-	<title>Pomodoro Clock</title>
+	  	<link rel="stylesheet" type="text/css" href="styles.css">
+	  	<script src="clock.js"></script>
+	  	<script src="scripts.js"></script>
+		<title>Pomodoro Clock</title>
 
-	<script>
-		var currentTimer='';
-
-		function startTimers(timer1,timer2){
-			currentTimer=timer1.name;
-			$(".currentTimer").text(currentTimer);
-			timer1.dec($(".countdown"));
-			timer1.startTimer($(".countdown"),1000);
-			// console.log(currentTimer);
-
-			var t=setInterval(function(){
-				// console.log(timer1.getMilliseconds());
-				if(timer1.getMilliseconds()<=0){
-					// timer1.setMilliseconds(0);
-					// timer1.render($(".countdown"));
-					clearInterval(t);
-					timer1.stopTimer();
-					timer1.reset();
-					$(".countdown").text(timer2.timeString);
-					startTimers(timer2,timer1);
-				}
-			},1000);
-		}
-
-		function stopTimers(timer1,timer2){
-			if(timer1.isRunning()){
-				timer1.stopTimer();
-			}
-			if(timer2.isRunning()){
-				timer2.stopTimer();
-			}
-			$(".timerIcon").removeClass("fa-pause").addClass("fa-play");
-		}
-
-		function timersRunning(timers){
-			var args = Array.prototype.slice.call(arguments);
-
-			// if at least one timer is running, return true, else false
-			return args.some(function(elem){
-				return elem.isRunning();
-			});
-		}
-
-		function changeTimer(timer,input){
-			timer.setMilliseconds(input.val()*60*1000);
-			if(currentTimer===timer.name){
-				$(".countdown").text(timer.timeString());
-				timer.stopTimer();
-				$(".timerIcon").removeClass("fa-pause").addClass("fa-play");
-			}
-		}
-
-		$(document).ready(function(){
-			
-			// create session timer
-			var sessionInMil=$(".session").val()*60*1000;
-			var s=new Clock("Session",sessionInMil);
-
-			// create break timer
-			var breakInMil=$(".break").val()*60*1000;
-			var b=new Clock("Break",breakInMil);
-
-			// set global current timer
-			currentTimer=s.name;
-
-			// Set current timer text
-			$(".currentTimer").text(s.name);
-
-			// Set timer text to session timer
-			$(".countdown").text(s.timeString());
-
-			// session input value change
-			$(".session").change(function(){
-				changeTimer(s,$(this))
-			});
-
-			//break input value cahnge
-			$(".break").change(function(){
-				changeTimer(b,$(this))
-			});
-
-
-			// Start/stop button
-			$(".pomodoroTimer").click(function(){
-				if(!s.isRunning() && !b.isRunning()) {
-					if(currentTimer==='' || currentTimer===s.name){
-						startTimers(s,b);
-					} else if (currentTimer='break'){
-						startTimers(b,s);
-					}
-					$(".timerIcon").removeClass("fa-play").addClass("fa-pause");
-				} else {
-					stopTimers(s,b);
-				}
-			});
-
-
-			// Increment/decrement buttons
-
-			$(".sInc").click(function(){
-				var add=+$(".session").val();
-				$(".session").val(add+1);
-				changeTimer(s,$(".session"));
-			});
-
-			$(".sDec").click(function(){
-				var dec=+$(".session").val();
-				if(dec>1){
-					$(".session").val(dec-1);
-					changeTimer(s,$(".session"));
-				}				
-			});
-
-
-			$(".bInc").click(function(){
-				var add=+$(".break").val();
-				$(".break").val(add+1);
-				changeTimer(b,$(".break"));
-			});
-
-			$(".bDec").click(function(){
-				var dec=+$(".break").val();
-				if(dec>1){
-					$(".break").val(dec-1);
-					changeTimer(b,$(".break"));
-				}				
-			});
-
-	    });
-
-	</script>
-	<style>
-		body{background-color: #bdda57;}
-		.wrapper{text-align: center;}
-		.center{display:inline-block; min-width: 500px;}
-		.pageHeader{color:#ff6347; font-family: "Courgette";font-size:50px;}
-		.timerSet{margin: 50px 0 30px 0;}
-		.textInput{width:50px;}
-		.currentTimer{margin:5px;}
-		.countdown{margin:15px;}
-		.timeLabel{color:#FF4747;}
-		.timerInput{margin-bottom: 15px;}
-		.timerBtn{background-color: #156912;border-color: #1a8316;color:#fff;}
-		.pomodoroTimer{cursor:pointer;background-color: #ff6347;margin:auto;width:40%;padding:30px;border-radius: 100px;-moz-border-radius: 100px;-webkit-border-radius: 100px;color:#fff;border-style:solid;}
-		/*.pomodoroTimer:hover{background-color: #FF4747}*/
-
-		.btn-push {
-			-webkit-box-shadow: 0px 5px 0px #c4c4c4;
-			-moz-box-shadow: 0px 5px 0px #c4c4c4;
-			-ms-box-shadow: 0px 5px 0px #c4c4c4;
-			-o-box-shadow: 0px 5px 0px #c4c4c4;
-			box-shadow: 0px 5px 0px #c4c4c4;
-
-			-webkit-transition: All 250ms ease;
-			-moz-transition: All 250ms ease;
-			-o-transition: All 250ms ease;
-			-ms-transition: All 250ms ease;
-			transition: All 250ms ease;
-		}
-
-		.btn-push:active {
-		  position: relative;
-		  top: 5px;
-		  -webkit-box-shadow: none !important;
-		  -moz-box-shadow: none !important;
-		  -ms-box-shadow: none !important;
-		  -o-box-shadow: none !important;
-		  box-shadow: none !important;
-		  -webkit-transition: All 250ms ease;
-		  -moz-transition: All 250ms ease;
-		  -o-transition: All 250ms ease;
-		  -ms-transition: All 250ms ease;
-		  transition: All 250ms ease;
-		}
-
-
-	</style>
-
-</head>
+	</head>
 	<body>
 		<div class="wrapper text-center">
 			<div class="container-fluid center">

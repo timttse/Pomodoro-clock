@@ -6,6 +6,10 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   	<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+  	<link href='https://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
+
+	<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
   	<!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
   	<script src="clock.js"></script>
   	<!-- <script src="script.js"></script> -->
@@ -17,19 +21,22 @@
 		function startTimers(timer1,timer2){
 			currentTimer=timer1.name;
 			$(".currentTimer").text(currentTimer);
-			timer1.startTimer($(".countdown"),100);
-			console.log(currentTimer);
+			timer1.dec($(".countdown"));
+			timer1.startTimer($(".countdown"),1000);
+			// console.log(currentTimer);
 
 			var t=setInterval(function(){
 				// console.log(timer1.getMilliseconds());
-				if(timer1.getMilliseconds()===0){
+				if(timer1.getMilliseconds()<=0){
+					// timer1.setMilliseconds(0);
+					// timer1.render($(".countdown"));
 					clearInterval(t);
 					timer1.stopTimer();
 					timer1.reset();
 					$(".countdown").text(timer2.timeString);
 					startTimers(timer2,timer1);
 				}
-			},100);
+			},1000);
 		}
 
 		function stopTimers(timer1,timer2){
@@ -39,6 +46,8 @@
 			if(timer2.isRunning()){
 				timer2.stopTimer();
 			}
+			// $(".timerIcon").switchClass("fa-pause","fa-play","swing");
+			$(".timerIcon").removeClass("fa-pause").addClass("fa-play");
 		}
 
 		function timersRunning(timers){
@@ -55,6 +64,8 @@
 			if(currentTimer===timer.name){
 				$(".countdown").text(timer.timeString());
 				timer.stopTimer();
+				// $(".timerIcon").switchClass("fa-pause","fa-play","swing");
+				$(".timerIcon").removeClass("fa-pause").addClass("fa-play");
 			}
 		}
 
@@ -88,27 +99,23 @@
 			});
 
 
-			// start button
-			$(".startTimer").click(function(){
-
+			// Start/stop button
+			$(".pomodoroTimer").click(function(){
 				if(!s.isRunning() && !b.isRunning()) {
 					if(currentTimer==='' || currentTimer===s.name){
 						startTimers(s,b);
 					} else if (currentTimer='break'){
 						startTimers(b,s);
 					}
+					// $(".timerIcon").switchClass("fa-play","fa-pause","swing");
+					$(".timerIcon").removeClass("fa-play").addClass("fa-pause");
+				} else {
+					stopTimers(s,b);
 				}
 			});
 
-			// stop/pause button
-			$(".stopTimer").click(function(){
-				stopTimers(s,b);
-			});
 
-			$(".test").click(function(){
-				console.log(timersRunning(s,b));
-			});
-
+			// Increment/decrement buttons
 
 			$(".sInc").click(function(){
 				var add=+$(".session").val();
@@ -145,27 +152,64 @@
 
 	</script>
 	<style>
+		body{background-color: #bdda57}
 		.wrapper{text-align: center;}
 		.center{display:inline-block; min-width: 500px;}
+		.pageHeader{color:#ff6347; font-family: "Courgette";font-size:50px;}
 		.timerSet{margin: 50px 0 30px 0;}
 		.textInput{width:50px;}
 		.currentTimer{margin:5px;}
 		.countdown{margin:15px;}
+		.timeLabel{color:#FF4747;}
+		.pomodoroTimer{cursor:pointer;background-color: #ff6347;margin:auto;width:40%;padding:30px;border-radius: 100px;color:#fff;border-style:solid;}
+		/*.pomodoroTimer:hover{background-color: #FF4747}*/
+
+		.btn-push {
+			-webkit-box-shadow: 0px 5px 0px #c4c4c4;
+			-moz-box-shadow: 0px 5px 0px #c4c4c4;
+			-ms-box-shadow: 0px 5px 0px #c4c4c4;
+			-o-box-shadow: 0px 5px 0px #c4c4c4;
+			box-shadow: 0px 5px 0px #c4c4c4;
+
+			-webkit-transition: All 250ms ease;
+			-moz-transition: All 250ms ease;
+			-o-transition: All 250ms ease;
+			-ms-transition: All 250ms ease;
+			transition: All 250ms ease;
+		}
+
+		.btn-push:active {
+		  position: relative;
+		  top: 5px;
+		  -webkit-box-shadow: none !important;
+		  -moz-box-shadow: none !important;
+		  -ms-box-shadow: none !important;
+		  -o-box-shadow: none !important;
+		  box-shadow: none !important;
+		  -webkit-transition: All 250ms ease;
+		  -moz-transition: All 250ms ease;
+		  -o-transition: All 250ms ease;
+		  -ms-transition: All 250ms ease;
+		  transition: All 250ms ease;
+		}
+
 	</style>
 
 </head>
 <body>
 	<div class="wrapper text-center">
 		<div class="container-fluid center">
+		<h1 class="pageHeader">Pomodoro Clock</h1>
 			<div class="row timerSet justify-content-center">
-				<div class="col-sm-6"><label class="text-center">Break Length</label><br/><button class="bDec">-</button><input class="break textInput text-center" type="text" value="2" /><button class="bInc">+</button></div>
-				<div class="col-sm-6"><label class="text-center">Session Length</label><br/><button class="sDec">-</button><input class="session textInput text-center" type="text" value="1" /><button class="sInc">+</button></div>
+				<div class="col-sm-6"><label class="text-center timeLabel">Break Length</label><br/><button class="bDec">-</button><input class="break textInput text-center" type="text" value="2" /><button class="bInc">+</button></div>
+				<div class="col-sm-6"><label class="text-center timeLabel">Session Length</label><br/><button class="sDec">-</button><input class="session textInput text-center" type="text" value="1" /><button class="sInc">+</button></div>
 			</div>
-			<div><h3 class="currentTimer"></h3></div>
-			<div><h2 class="countdown"></h2></div>
-			<button class="stopTimer">Stop</button>
-			<button class="startTimer">Start</button>
-			<button class="test">Test</button>
+			<div class="pomodoroTimer btn-push">
+				<h3 class="currentTimer"></h3>
+				<h2 class="countdown"></h2>
+				<!-- <button class="timerBtn">Start</button> -->
+				<i class="timerIcon fa fa-play fa-2x" aria-hidden="true"></i>
+			</div>
 		</div>
 	</div>
 </body>

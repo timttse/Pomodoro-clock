@@ -46,7 +46,6 @@
 			if(timer2.isRunning()){
 				timer2.stopTimer();
 			}
-			// $(".timerIcon").switchClass("fa-pause","fa-play","swing");
 			$(".timerIcon").removeClass("fa-pause").addClass("fa-play");
 		}
 
@@ -64,7 +63,6 @@
 			if(currentTimer===timer.name){
 				$(".countdown").text(timer.timeString());
 				timer.stopTimer();
-				// $(".timerIcon").switchClass("fa-pause","fa-play","swing");
 				$(".timerIcon").removeClass("fa-pause").addClass("fa-play");
 			}
 		}
@@ -86,7 +84,7 @@
 			$(".currentTimer").text(s.name);
 
 			// Set timer text to session timer
-			$(".countdown").text(s.getMinutes());
+			$(".countdown").text(s.timeString());
 
 			// session input value change
 			$(".session").change(function(){
@@ -107,7 +105,6 @@
 					} else if (currentTimer='break'){
 						startTimers(b,s);
 					}
-					// $(".timerIcon").switchClass("fa-play","fa-pause","swing");
 					$(".timerIcon").removeClass("fa-play").addClass("fa-pause");
 				} else {
 					stopTimers(s,b);
@@ -121,7 +118,6 @@
 				var add=+$(".session").val();
 				$(".session").val(add+1);
 				changeTimer(s,$(".session"));
-				//console.log($(".break").val()++)
 			});
 
 			$(".sDec").click(function(){
@@ -137,7 +133,6 @@
 				var add=+$(".break").val();
 				$(".break").val(add+1);
 				changeTimer(b,$(".break"));
-				//console.log($(".break").val()++)
 			});
 
 			$(".bDec").click(function(){
@@ -152,7 +147,7 @@
 
 	</script>
 	<style>
-		body{background-color: #bdda57}
+		body{background-color: #bdda57;}
 		.wrapper{text-align: center;}
 		.center{display:inline-block; min-width: 500px;}
 		.pageHeader{color:#ff6347; font-family: "Courgette";font-size:50px;}
@@ -195,24 +190,25 @@
 		  transition: All 250ms ease;
 		}
 
+
 	</style>
 
 </head>
-<body>
-	<div class="wrapper text-center">
-		<div class="container-fluid center">
-		<h1 class="pageHeader">Pomodoro Clock</h1>
-			<div class="row timerSet justify-content-center">
-				<div class="col-sm-6 timerInput"><label class="text-center timeLabel">Break Length</label><br/><button class="bDec timerBtn">-</button><input class="break textInput text-center" type="text" value="2" /><button class="bInc timerBtn">+</button></div>
-				<div class="col-sm-6 timerInput"><label class="text-center timeLabel">Session Length</label><br/><button class="sDec timerBtn">-</button><input class="session textInput text-center" type="text" value="1" /><button class="sInc timerBtn">+</button></div>
-			</div>
-			<div class="pomodoroTimer btn-push">
-				<h3 class="currentTimer"></h3>
-				<h2 class="countdown"></h2>
-				<!-- <button class="timerBtn">Start</button> -->
-				<i class="timerIcon fa fa-play fa-2x" aria-hidden="true"></i>
+	<body>
+		<div class="wrapper text-center">
+			<div class="container-fluid center">
+			<h1 class="pageHeader">Pomodoro Clock</h1>
+				<div class="row timerSet justify-content-center">
+					<div class="col-sm-6 timerInput"><label class="text-center timeLabel">Break Length</label><br/><button class="bDec timerBtn">-</button><input class="break textInput text-center" type="text" value="5" /><button class="bInc timerBtn">+</button></div>
+					<div class="col-sm-6 timerInput"><label class="text-center timeLabel">Session Length</label><br/><button class="sDec timerBtn">-</button><input class="session textInput text-center" type="text" value="25" /><button class="sInc timerBtn">+</button></div>
+				</div>
+				<div class="pomodoroTimer btn-push">
+					<h3 class="currentTimer"></h3>
+					<h2 class="countdown"></h2>
+					<!-- <button class="timerBtn">Start</button> -->
+					<i class="timerIcon fa fa-play fa-2x" aria-hidden="true"></i>
+				</div>
 			</div>
 		</div>
-	</div>
-</body>
+	</body>
 </html>

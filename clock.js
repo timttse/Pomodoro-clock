@@ -68,7 +68,7 @@ function Clock(name, millisecs){
 		var minutes = Math.floor((millisecs % (1000 * 60 * 60)) / (1000 * 60));
 		var seconds = Math.floor((millisecs % (1000 * 60)) / 1000);
 		if (seconds<10){seconds='0'+seconds};
-		if(minutes<10){minutes='0'+minutes};
+		if(minutes<10 && hours>0){minutes='0'+minutes};
 		// console.log(name+": "+days+'d '+hours+'h '+minutes+':'+seconds);
 		var timeString='';
 		if(days>0){
